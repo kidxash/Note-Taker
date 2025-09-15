@@ -1,19 +1,15 @@
 import mongoose from "mongoose";
 
 const blogModel = mongoose.Schema({
-    Title: {
-        type: String,
-        required: true
-    },
-    Info: {
-        type: String,
-        required: true
-    },
+    Title: { type: String, required: true },
+    Info: { type: String, required: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 }, {
     timestamps: true  // Optional: adds createdAt and updatedAt fields
 });
 
 const blog = mongoose.model("Blog", blogModel);
+
 
 export default blog;
 
