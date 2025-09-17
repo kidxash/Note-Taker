@@ -4,16 +4,16 @@ import blog from "../product_models.js";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
-
+import UserAuth from "./MiddleWear/userdataAuth.js";
 dotenv.config();
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
-app.get("/", async (req, res) => {
+app.get("/", UserAuth, async (req, res) => {
     try {
-        const info = await blog.find({});
+        const info = await blog.find({userId : req.user.id}); // Fetch blogs for the authenticated user
         res.status(200).json({success: true, data: info});
     } catch(error) {
         console.log("Error with message", error.message);
