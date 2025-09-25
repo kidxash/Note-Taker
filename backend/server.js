@@ -22,7 +22,6 @@ app.get("/", UserAuth, async (req, res) => {
 });
 
 app.post("/", UserAuth, async (req, res) => {
-
     
     const Blog = req.body;
 

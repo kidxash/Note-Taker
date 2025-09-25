@@ -3,8 +3,8 @@ import HomePage from './pages/Home'
 import CreatePage from './pages/Create'
 import UpdatePage from './pages/updatePage'
 import ShowBlog from './componets/showBlog'
+import Loginpage from './pages/Loginpage'
 import Navbar from './componets/Navbar'
-import { useEffect } from 'react'
 
 
 function App() {
@@ -22,6 +22,7 @@ function App() {
           <Route path='/create' element ={<CreatePage />} />
           <Route path='/blog/:id' element ={<ShowBlog />} />
           <Route path='/update/:id' element ={<UpdatePage />} />
+          <Route path='/login' element={<Loginpage />} />
         </Routes>
         </div>
     </>
