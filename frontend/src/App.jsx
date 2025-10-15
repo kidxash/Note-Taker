@@ -14,9 +14,10 @@ function App() {
   return (
     <>
     
-    
       <Navbar />
       <div className='bg-orange-200 pt-20 min-h-screen'>
+            
+
         <Routes>
           <Route path='/' element ={<HomePage />} />
           <Route path='/create' element ={<CreatePage />} />

@@ -8,15 +8,10 @@ function HomePage(){
         fetchBlogs();
 
     },[fetchBlogs]);
-    
-    
-
-
-
     return(
 <>
 
-    <h1 className="text-center text-4xl font-bold">Note-Taker</h1>
+    <h1 className="text-center text-6xl font-bold mt-15">Welcome To SafeNote</h1>
     {products.map((blog) =>(
         
         <BlogIcon key={blog._id} blog={blog} />

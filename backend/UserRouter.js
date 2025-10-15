@@ -163,7 +163,6 @@ export const isAuthenticated = async (req, res) => {
     
 }
 
-//send pass
 export const sendResetOtp =async (req, res)=>{
     const{ email} =req.body
 
