@@ -8,6 +8,8 @@ const UserAuth = (req, res, next) => {
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = decoded;
+        req.userId = decoded.id;  // Add this line to set userId
+        console.log('UserAuth middleware - decoded token:', decoded); // Debug log
         next();
     } catch (error) {
         return res.status(401).json({success: false, message: "Unauthorized: Invalid token"});

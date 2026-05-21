@@ -1,6 +1,7 @@
 import { written } from "../API/API";
 import { useNavigate } from "react-router-dom";
 function BlogIcon({blog}) {
+    
     const {deleteBlog, updateBlog} = written();
     const navigate = useNavigate();
 

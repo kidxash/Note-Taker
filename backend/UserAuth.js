@@ -21,7 +21,7 @@ export const login = async (req, res) => {
         }
          const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
         res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
-        res.status(200).json({success: true, message: "Login successful", data: { token }});
+        res.status(200).json({success: true, message: "Login successful", data: { token, username: user.username }});
     } catch (error) {
         console.error(error);
         res.status(500).json({success: false, message: "Server error"});
@@ -97,29 +97,45 @@ export const logout = async (req, res) => {
 export const sendVerifyOTP = async (req, res) => {
     try {
         const userId = req.userId;
+        
+        // Debug: Log the userId to see what we're getting
+        console.log('SendVerifyOTP - Looking for user with ID:', userId);
+        console.log('UserId type:', typeof userId);
 
-    const user = await userModel.findById(userId);
-    if(user.isAccountVerified){
-        return res.json({success: false, message: "account already verfifed"})
-    }
+        const user = await userModel.findById(userId);
+        
+        // Debug: Log if user was found
+        if (!user) {
+            console.log('SendVerifyOTP - No user found with ID:', userId);
+            // Let's also try to find any user to see if database connection works
+            const anyUser = await userModel.findOne({});
+            console.log('Any user in database?', anyUser ? 'Yes' : 'No');
+            return res.json({success: false, message: 'User not found'});
+        }
+        
+        console.log('SendVerifyOTP - User found:', user.email);
+        
+        if(user.isAccountVerified){
+            return res.json({success: false, message: "Account already verified"})
+        }
 
     const otp =  String(Math.floor(100000 + Math.random() * 900000))
 
      user.verifyOTP = otp;
-        user.verifyOTPExpireAt = Date.now() + 24 * 60 * 60 * 1000
+     user.verifyOTPExpireAt = Date.now() + 24 * 60 * 60 * 1000
 
     await user.save()
 
     const  mailOptions = {
           from: process.env.SENDER_EMAIL,
             to: user.email,
-            subject: 'Account Verfication OTP',
+            subject: 'Account Verification OTP',
             text: `Your OTP is ${otp}. Verify your account using this OTP.`
     }
 
     await transporter.sendMail(mailOptions);
 
-    res.json({success: true, message: 'Verification OTP Send Email'})
+    res.json({success: true, message: 'Verification OTP sent to email'})
 
         } catch (error) {
         res.json({success: false, message: error.message})
@@ -133,13 +149,15 @@ export const verifyEmail = async (req, res) => {
            const {otp} = req.body;
 
             if(!otp || !userId){
-                return res.json({sucess:false, message: 'missing Details'})
+                return res.json({success:false, message: 'Missing details'})
             }
 
             try {
+                 console.log('VerifyEmail - Looking for user with ID:', userId);
                  const user = await userModel.findById(userId)
                  if(!user)
                  {
+                console.log('VerifyEmail - No user found with ID:', userId);
                 return res.json({success:false, message: 'User not found'});
 
                  }
@@ -147,7 +165,7 @@ export const verifyEmail = async (req, res) => {
                     return res.json({success:false, message: 'Invalid OTP'});
                  }
                  if(user.verifyOTPExpireAt < Date.now()){
-                 return res.json({sucess:false, message: 'OTP expried'});
+                 return res.json({success:false, message: 'OTP expired'});
                  }
 
                  user.isAccountVerified = true
@@ -156,11 +174,11 @@ export const verifyEmail = async (req, res) => {
 
                  await user.save()
 
-                 return res.json({success: true, message: 'email verified successfully'})
+                 return res.json({success: true, message: 'Email verified successfully'})
 
                 
             } catch (error) {
-                 return res.json({success:false, message: error.messsage})
+                 return res.json({success:false, message: error.message})
 
             }
 
@@ -168,7 +186,7 @@ export const verifyEmail = async (req, res) => {
 }
 export const isAuthenticated = async (req, res) => {
     try{
-    res.json({success: true })
+        res.json({success: true })
     }catch(error)
     {
         res.json({success: false, message: error.message})

@@ -1,11 +1,35 @@
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { written } from "../API/API";
 
 function Navbar() {
+  const navigate = useNavigate();
+  const { logout: apiLogout, isLoggedIn } = written();
+
   // Remove body margin when Navbar mounts
   useEffect(() => {
     document.body.style.margin = "0";
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      const result = await apiLogout();
+      
+      if (result.success) {
+        console.log('Logout successful');
+        // Redirect to login page
+        navigate('/login');
+      } else {
+        console.error('Logout failed:', result.message);
+        // Still redirect to clear frontend state
+        navigate('/login');
+      }
+    } catch (error) {
+      console.error("Logout failed:", error);
+      // Still redirect even if there's an error
+      navigate('/login');
+    }
+  };
 
   return (
     <nav className="fixed top-0 left-0 w-full bg-gradient-to-r from-yellow-600 to-orange-900 shadow-lg z-50">
@@ -25,19 +49,30 @@ function Navbar() {
               >
                 Home
               </Link>
-              <Link 
-                to="/create" 
-                className="text-white hover:bg-orange-200 hover:text-black px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 transform hover:scale-105"
-              >
-                Create
-              </Link>
-              <Link
-                to="/login"
-                className="text-white hover:bg-orange-200 hover:text-black px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 transform hover:scale-105"
-              >
-                Login
-              </Link>
-              
+              {isLoggedIn && (
+                <Link 
+                  to="/create" 
+                  className="text-white hover:bg-orange-200 hover:text-black px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 transform hover:scale-105"
+                >
+                  Create
+                </Link>
+              )}
+              {!isLoggedIn && (
+                <Link
+                  to="/login"
+                  className="text-white hover:bg-orange-200 hover:text-black px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 transform hover:scale-105"
+                >
+                  Login
+                </Link>
+              )}
+              {isLoggedIn && (
+                <button 
+                  onClick={handleLogout}
+                  className="text-white hover:bg-orange-200 hover:text-black px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 transform hover:scale-105 cursor-pointer"
+                >
+                  Logout
+                </button>
+              )}
             </div>
           </div>
 
