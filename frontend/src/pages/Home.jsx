@@ -30,6 +30,7 @@ function HomePage(){
                 <p className="text-center text-xl text-gray-600 -mt-8 mb-8">Welcome back, <span className="font-semibold text-yellow-600">{user.username}</span>!</p>
             )}
 
+
             {!isLoggedIn ? (
                 <div className="text-center mt-16">
                     <p className="text-xl text-gray-600 mb-4">Login to get started</p>
@@ -47,12 +48,12 @@ function HomePage(){
                 ) : products?.length === 0 ? (
                     <div className="text-center">
                         <p className="text-gray-600 mb-6">No blogs yet. Start writing!</p>
-                        <a 
-                            href="/create" 
+                        <Link
+                            to="/create" 
                             className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600"
                         >
                             Create Your First Blog
-                        </a>
+                        </Link>
                     </div>
                 ) : (
                     <div>

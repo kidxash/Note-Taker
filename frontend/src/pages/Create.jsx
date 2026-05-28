@@ -19,7 +19,7 @@ function CreatePage(){
             console.log("Response:", res);
             
             if(res.success) {
-                alert("Blog has been submitted");
+                alert("Note has been created successfully!");
                 // Clear the form after successful submission
                 newBlog({ Title: "", Info: "" });
             } else {
@@ -68,7 +68,7 @@ return(<>
         className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded shadow"
         onClick={() => { Add(); }}
     >
-        Submit Blog
+        Submit Note
     </button>
 </div>
 
